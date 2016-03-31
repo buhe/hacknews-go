@@ -31,6 +31,8 @@ func FetchTitles(max int) {
 		fmt.Printf("%T\n%s\n%#v\n", err, err, err)
 	}
 
+	var stories = make([]Story, max)
+
 	for index, id := range ids {
 		resp, err := http.Get(fmt.Sprintf(itemURL, id))
 		var story = new(Story)
@@ -39,11 +41,13 @@ func FetchTitles(max int) {
 		if err != nil {
 			fmt.Printf("%T\n%s\n%#v\n", err, err, err)
 		}
-		fmt.Println(story.Title)
-		if index >= max {
+		stories[index] = *story
+		if index >= max-1 {
 			break
 		}
 	}
-	// fmt.Println(ids[0])
+	for index, story := range stories {
+		fmt.Println(index, ". ", story.Title, " > ", story.Url)
+	}
 
 }
