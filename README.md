@@ -1,4 +1,4 @@
-# Hacknews Cli prower by golang
+# Hacknews Cli power by golang
 
 ```bash
   go install github.com/buhe/hacknews-go
