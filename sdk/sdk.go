@@ -31,23 +31,28 @@ func FetchTitles(max int) {
 		fmt.Printf("%T\n%s\n%#v\n", err, err, err)
 	}
 
-	var stories = make([]Story, max)
+	//var stories = make([]Story, max)
+	channel := make(chan Story, max)
 
 	for index, id := range ids {
-		resp, err := http.Get(fmt.Sprintf(itemURL, id))
-		var story = new(Story)
-		decoder := json.NewDecoder(resp.Body)
-		err = decoder.Decode(&story)
-		if err != nil {
-			fmt.Printf("%T\n%s\n%#v\n", err, err, err)
-		}
-		stories[index] = *story
+		go func() {
+			resp, err := http.Get(fmt.Sprintf(itemURL, id))
+			var story = new(Story)
+			decoder := json.NewDecoder(resp.Body)
+			err = decoder.Decode(&story)
+			if err != nil {
+				fmt.Printf("%T\n%s\n%#v\n", err, err, err)
+			}
+			//stories[index] = *story
+			channel <- *story;
+		}()
 		if index >= max-1 {
 			break
 		}
 	}
-	for index, story := range stories {
+	for index, story := range  channel {
 		fmt.Println(index, ". ", story.Title, " > ", story.Url)
 	}
 
 }
+
