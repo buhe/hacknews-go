@@ -33,10 +33,11 @@ func FetchTitles(max int) {
 
 	//var stories = make([]Story, max)
 	channel := make(chan Story, max)
-
+	//fmt.Println(ids);
 	for index, id := range ids {
-		go func() {
-			resp, err := http.Get(fmt.Sprintf(itemURL, id))
+		go func(tid int) {  //直接传进去id 不行
+			//fmt.Println(id);
+			resp, err := http.Get(fmt.Sprintf(itemURL, tid))
 			var story = new(Story)
 			decoder := json.NewDecoder(resp.Body)
 			err = decoder.Decode(&story)
@@ -45,13 +46,14 @@ func FetchTitles(max int) {
 			}
 			//stories[index] = *story
 			channel <- *story;
-		}()
+		}(id)
 		if index >= max-1 {
 			break
 		}
 	}
-	for index, story := range  channel {
-		fmt.Println(index, ". ", story.Title, " > ", story.Url)
+	for i := 1 ; i <= max ;i++{//顺序有问题了啊.要搞一下
+		story := <-channel
+		fmt.Println(i, ". ", story.Title, " > ", story.Url)
 	}
 
 }
