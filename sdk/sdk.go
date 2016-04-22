@@ -9,6 +9,7 @@ import (
 const topURL string = "https://hacker-news.firebaseio.com/v0/topstories.json"
 const itemURL string = "https://hacker-news.firebaseio.com/v0/item/%d.json"
 
+
 type Story struct {
 	Title string
 	Time  int

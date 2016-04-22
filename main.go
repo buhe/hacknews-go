@@ -8,10 +8,16 @@ import (
 	"github.com/buhe/hacknews-go/sdk"
 	"strconv"
 	"os"
+	"github.com/toqueteos/webbrowser"
 )
 
-//var result []string;
+var result []sdk.Story;
+
 var i int;
+
+var currentUrl string;
+
+var index int = 0;
 
 func nextView(g *gocui.Gui, v *gocui.View) error {
 	if v == nil || v.Name() == "side" {
@@ -23,12 +29,14 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 func cursorDown(g *gocui.Gui, v *gocui.View) error {
 	if v != nil {
 		cx, cy := v.Cursor()
-		if err := v.SetCursor(cx, cy+1); err != nil {
+		if err := v.SetCursor(cx, cy + 1); err != nil {
 			ox, oy := v.Origin()
-			if err := v.SetOrigin(ox, oy+1); err != nil {
+			if err := v.SetOrigin(ox, oy + 1); err != nil {
 				return err
 			}
 		}
+		index = index + 1;
+		currentUrl = result[index].Url;
 	}
 	return nil
 }
@@ -37,17 +45,21 @@ func cursorUp(g *gocui.Gui, v *gocui.View) error {
 	if v != nil {
 		ox, oy := v.Origin()
 		cx, cy := v.Cursor()
-		if err := v.SetCursor(cx, cy-1); err != nil && oy > 0 {
-			if err := v.SetOrigin(ox, oy-1); err != nil {
+		if err := v.SetCursor(cx, cy - 1); err != nil && oy > 0 {
+			if err := v.SetOrigin(ox, oy - 1); err != nil {
 				return err
 			}
+
 		}
+		index = index - 1;
+		currentUrl = result[index].Url;
 	}
 	return nil
 }
 
 func getLine(g *gocui.Gui, v *gocui.View) error {
 	//get comment and print
+	webbrowser.Open(currentUrl);
 	return nil;
 }
 
@@ -90,10 +102,11 @@ func layout(g *gocui.Gui) error {
 			return err
 		}
 		v.Highlight = true
-		result := sdk.FetchTitles(i)
-		for index,story :=range result {
-			line := fmt.Sprintf("%d. %s" ,index + 1, story.Title);
-			fmt.Fprintln(v,line);
+		result = sdk.FetchTitles(i)
+		currentUrl = result[0].Url;
+		for index, story := range result {
+			line := fmt.Sprintf("%d. %s", index + 1, story.Title);
+			fmt.Fprintln(v, line);
 		}
 
 	}
@@ -118,11 +131,11 @@ func quit(g *gocui.Gui, v *gocui.View) error {
 func main() {
 	var err error;
 	i, err = strconv.Atoi(os.Args[1])
-		if err != nil {
-			// handle error
-			fmt.Println(err)
-			os.Exit(2)
-		}
+	if err != nil {
+		// handle error
+		fmt.Println(err)
+		os.Exit(2)
+	}
 
 
 	//result := sdk.FetchTitles(10)
@@ -153,7 +166,6 @@ func main() {
 	g.SelBgColor = gocui.ColorGreen
 	g.SelFgColor = gocui.ColorBlack
 	g.Cursor = true
-
 
 	if err := g.MainLoop(); err != nil && err != gocui.ErrQuit {
 		log.Panicln(err)
