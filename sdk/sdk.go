@@ -17,7 +17,7 @@ type Story struct {
 	Score int
 }
 
-func FetchTitles(max int) {
+func FetchTitles(max int) []Story {
 	resp, err := http.Get(topURL)
 	if err != nil {
 		// handle error
@@ -35,7 +35,8 @@ func FetchTitles(max int) {
 	channel := make(chan Story, max)
 	//fmt.Println(ids);
 	for index, id := range ids {
-		go func(tid int) {  //直接传进去id 不行
+		go func(tid int) {
+			//直接传进去id 不行
 			//fmt.Println(id);
 			resp, err := http.Get(fmt.Sprintf(itemURL, tid))
 			var story = new(Story)
@@ -47,14 +48,19 @@ func FetchTitles(max int) {
 			//stories[index] = *story
 			channel <- *story;
 		}(id)
-		if index >= max-1 {
+		if index >= max - 1 {
 			break
 		}
 	}
-	for i := 1 ; i <= max ;i++{//顺序有问题了啊.要搞一下
-		story := <-channel
-		fmt.Println(i, ". ", story.Title, " > ", story.Url)
+	result := make([] Story, max);
+	for i := 0; i < max; i++ {
+		//顺序有问题了啊.要搞一下
+		result[i] = <-channel
+		//result[i] = fmt.Sprintf("%d. %s" ,i + 1, story.Title);
+		//fmt.Println(i, ". ", story.Title, " > ", story.Url)
+
 	}
+	return result;
 
 }
 
