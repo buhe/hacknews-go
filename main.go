@@ -26,6 +26,23 @@ func nextView(g *gocui.Gui, v *gocui.View) error {
 	return g.SetCurrentView("side")
 }
 
+func renderComment(g *gocui.Gui, v *gocui.View) error {
+	story := result[index];
+	comments := sdk.FetchComment(story.Kids);
+	mainView, err := g.View("main");
+	if err != nil {
+		return err;
+	}
+	mainView.Clear()
+	fmt.Fprintln(mainView,"----------------------------------------COMMENT----------------------------------------");
+	for _, comment := range comments {
+		fmt.Fprintln(mainView, comment.Text);
+		fmt.Fprintln(mainView,"");
+	}
+	return nil;
+
+}
+
 func cursorDown(g *gocui.Gui, v *gocui.View) error {
 	if v != nil {
 		cx, cy := v.Cursor()
@@ -82,6 +99,9 @@ func keybindings(g *gocui.Gui) error {
 	if err := g.SetKeybinding("side", gocui.KeyEnter, gocui.ModNone, getLine); err != nil {
 		return err
 	}
+	if err := g.SetKeybinding("side", gocui.KeyCtrlE, gocui.ModNone, renderComment); err != nil {
+		return err
+	}
 	//if err := g.SetKeybinding("msg", gocui.KeyEnter, gocui.ModNone, delMsg); err != nil {
 	//	return err
 	//}
@@ -114,7 +134,7 @@ func layout(g *gocui.Gui) error {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
-		fmt.Fprintf(v, "%s", "comment")
+		fmt.Fprintf(v, "%s", "----------------------------------------COMMENT----------------------------------------")
 		v.Editable = true
 		v.Wrap = true
 		if err := g.SetCurrentView("side"); err != nil {
@@ -130,12 +150,17 @@ func quit(g *gocui.Gui, v *gocui.View) error {
 
 func main() {
 	var err error;
-	i, err = strconv.Atoi(os.Args[1])
-	if err != nil {
-		// handle error
-		fmt.Println(err)
-		os.Exit(2)
+	if len(os.Args) < 1 {
+		i = 10;
+	}else {
+		i, err = strconv.Atoi(os.Args[1])
+		if err != nil {
+			// handle error
+			fmt.Println(err)
+			os.Exit(2)
+		}
 	}
+
 
 
 	//result := sdk.FetchTitles(10)
