@@ -2,10 +2,6 @@ package main
 
 import (
 	"fmt"
-	//"os"
-	//"strconv"
-
-	//"github.com/buhe/hacknews-go/sdk"
 	//"github.com/codegangsta/cli"
 	"github.com/jroimartin/gocui"
 	"log"
