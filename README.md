@@ -18,4 +18,4 @@ VERSION:
 ```
 #hacknews-go 10
 ```
-!()[./screenshot.png]
+![](./screenshot.png)
