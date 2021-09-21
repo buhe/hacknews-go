@@ -3,7 +3,7 @@
 ```bash
   go install github.com/buhe/hacknews-go
 ```
-##Fetch top N
+## Fetch top N
 ```
 NAME:
    hacknews - Fetch Top N Stories
@@ -16,11 +16,11 @@ VERSION:
 ```
 
 ```
-#hacknews-go 20
+ hacknews-go 20
 ```
 ![](./screenshot.png)
 
-##HotKey
+## HotKey
 - <kbd>CTRL</kbd>+<kbd>E</kbd> Show current story comments
 - <kbd>ENTER</kbd> Open story in default brower
 - <kbd>CTRL</kbd>+<kbd>C</kbd> Quit
