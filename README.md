@@ -1,4 +1,4 @@
-# Hacknews CUI [![Build Status](https://travis-ci.org/buhe/hacknews-go.png)](https://travis-ci.org/buhe/hacknews-go)
+# Hacknews CUI [![Go](https://github.com/buhe/hacknews-go/actions/workflows/go.yml/badge.svg)](https://github.com/buhe/hacknews-go/actions/workflows/go.yml)
 
 ```bash
   go install github.com/buhe/hacknews-go
